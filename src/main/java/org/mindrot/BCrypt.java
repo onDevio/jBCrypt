@@ -15,8 +15,10 @@ package org.mindrot;
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 import java.io.UnsupportedEncodingException;
+import java.util.Random;
 
-import java.security.SecureRandom;
+// Esta clase no existe en Java 1.2
+//import java.security.SecureRandom;
 
 /**
  * BCrypt implements OpenBSD-style Blowfish password hashing using
@@ -676,7 +678,8 @@ public class BCrypt {
 		try {
 			passwordb = (password + (minor >= 'a' ? "\000" : "")).getBytes("UTF-8");
 		} catch (UnsupportedEncodingException uee) {
-			throw new AssertionError("UTF-8 is not supported");
+//			throw new AssertionError("UTF-8 is not supported");
+			throw new RuntimeException("UTF-8 is not supported");
 		}
 
 		saltb = decode_base64(real_salt, BCRYPT_SALT_LEN);
@@ -711,7 +714,7 @@ public class BCrypt {
 	 * @param random		an instance of SecureRandom to use
 	 * @return	an encoded salt value
 	 */
-	public static String gensalt(int log_rounds, SecureRandom random) {
+	public static String gensalt(int log_rounds, Random random) {
 		StringBuffer rs = new StringBuffer();
 		byte rnd[] = new byte[BCRYPT_SALT_LEN];
 
@@ -738,7 +741,8 @@ public class BCrypt {
 	 * @return	an encoded salt value
 	 */
 	public static String gensalt(int log_rounds) {
-		return gensalt(log_rounds, new SecureRandom());
+		// En el código original utiliza "new SecureRandom()", pero no existe en Java 1.2  
+		return gensalt(log_rounds, new Random());
 	}
 
 	/**
@@ -774,5 +778,19 @@ public class BCrypt {
 		for (int i = 0; i < try_bytes.length; i++)
 			ret |= hashed_bytes[i] ^ try_bytes[i];
 		return ret == 0;
+	}
+	
+	public static int strlen(String plaintext) {
+		if (plaintext == null) {
+			return 0;
+		}
+		return plaintext.length();
+	}
+
+	public static int bytelen(String plaintext) {
+		if (plaintext == null) {
+			return 0;
+		}
+		return plaintext.getBytes().length;
 	}
 }

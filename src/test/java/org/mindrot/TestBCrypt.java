@@ -192,5 +192,22 @@ public class TestBCrypt extends TestCase {
 		System.out.print(".");
 		System.out.println("");
 	}
+	
+	public void testPostgreSQL() {
+		for (int i = 0; i < test_vectors.length; i++) {
+			String plain = test_vectors[i][0];
+			String salt = test_vectors[i][1];
+			String hashed = test_vectors[i][2];
+			System.out.println("SELECT crypt('"+plain+"', '"+salt+"') = '"+hashed+"';");
+		}
+	}
 
+	public void testSybaseSQL() {
+		for (int i = 0; i < test_vectors.length; i++) {
+			String plain = test_vectors[i][0];
+			String salt = test_vectors[i][1];
+			String hashed = test_vectors[i][2];
+			System.out.println("SELECT compare(bcrypt_hashpw('"+plain+"', '"+salt+"'), '"+hashed+"');");
+		}
+	}
 }
